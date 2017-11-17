@@ -7,19 +7,26 @@ echo "\
                   |__'__'__'__'__|/
 "
 #check if I haven't saved on git
-#git diff should be empty
+# if git diff-index --quiet HEAD --; then
+#     echo 'no changes'
+# else
+#     echo 'changes'
+# fi
 #test for emptiness
 chrom=$1
-TimeStamp=$(date) #TimeStamp used to make the output folder
+TimeStamp=$(date +%Y-%m-%d) #TimeStamp used to make the output folder
 
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
 PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
+#PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
 pathToBed="/Users/luke/genomes/BED_MASKS" #this is where the bed masks are
-mkdir /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp
+#check if folder exists
+mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp
+#make a new directory for hour/minutes
 outputDIR="/Users/luke/Documents/MutSpect/FilteredData/$TimeStamp/$chrom" #set outputDIR
-mkdir $outputDIR
-mkdir $outputDIR/scripts
+mkdir -p $outputDIR
+mkdir -p $outputDIR/scripts
 #git rev-parse HEAD > $outputDIR/git_info.txt #(pointing to script directory)
 #git checkout ^ this number to get back to that state
 
@@ -31,45 +38,47 @@ cp PositionOfMutSpect.sh $outputDIR/scripts/
 cp FreqSpectPlot.R $outputDIR/scripts/
 cp PlotFilter.R $outputDIR/scripts/
 
-fileTest="$outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz"
-if [ -f $fileTest ]; then
+#if [ -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz.tbi ]; then
   echo "########### 1 : Nag Filtration ###########"
-
-  /usr/local/bin/bcftools-1.6/bcftools filter \
-  --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+  bash FiltrationPipeLine2.0.sh \
   $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
-  | /usr/local/bin/bcftools-1.6/bcftools filter \
-  -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
-  | /usr/local/bin/bcftools-1.6/bcftools view \
-  -m2 -M2 -v snps --output-type v \
-  --output-file \
-  $outputDIR/NAG_chr$chrom.3bed_filtered.vcf \
-  && bgzip $outputDIR/NAG_chr$chrom.3bed_filtered.vcf \
-  && tabix -p vcf $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz #\
+  NAG_chr$chrom \
+  $outputDIR
+  # /usr/local/bin/bcftools-1.6/bcftools filter \
+  # --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+  # $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
+  # | /usr/local/bin/bcftools-1.6/bcftools filter \
+  # -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
+  # | /usr/local/bin/bcftools-1.6/bcftools view \
+  # -m2 -M2 -v snps --output-type v \
+  # --output-file \
+  # $outputDIR/NAG_chr$chrom.3bed_filtered.vcf \
+  # && bgzip -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf \
+  # && tabix -f -p vcf $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz #\
   #& echo "  #   #   #    NAG_chr$chrom.3bed_filtered.vcf.gz Kill PID : $!"
-fi
+#fi
+echo "hey"
 
-
-fileTest="$outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz"
-if [ -f $fileTest ] \
-&& echo "$fileTest Found" \
-|| echo "$fileTest Not found"; \
-then
+#if [ -f $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz.tib ]; then
   echo "########### 2 : 1000Genome Filtration ###########"
-
-  /usr/local/bin/bcftools-1.6/bcftools filter \
-  --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+  bash FiltrationPipeLine2.0.sh \
   $PathToGenome/hg19/phase3/ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
-  | /usr/local/bin/bcftools-1.6/bcftools filter \
-  -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
-  | /usr/local/bin/bcftools-1.6/bcftools view \
-  -m2 -M2 -v snps --output-type v \
-  --output-file \
-  $outputDIR/1kG_chr$chrom.3bed_filtered.vcf \
-  && bgzip $outputDIR/1kG_chr$chrom.3bed_filtered.vcf \
-  && tabix -p vcf $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz #\
+  1kG_chr$chrom \
+  $outputDIR
+
+  # /usr/local/bin/bcftools-1.6/bcftools filter \
+  # --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+  # $PathToGenome/hg19/phase3/ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
+  # | /usr/local/bin/bcftools-1.6/bcftools filter \
+  # -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
+  # | /usr/local/bin/bcftools-1.6/bcftools view \
+  # -m2 -M2 -v snps --output-type v \
+  # --output-file \
+  # $outputDIR/1kG_chr$chrom.3bed_filtered.vcf \
+  # && bgzip -f $outputDIR/1kG_chr$chrom.3bed_filtered.vcf \
+  # && tabix -f -p vcf $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz #\
   #& echo "  #   #   #    1kG_chr$chrom.3bed_filtered.vcf.gz Kill PID : $!"
-fi
+#fi
 
 ##wait until each step has completed
 wait
@@ -82,10 +91,13 @@ if [ -f $fileTest ] && echo "$fileTest Found" || echo "$fileTest Not found"; the
   $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz \
   | /usr/local/bin/bcftools-1.6/bcftools view \
   --output-type z \
-  > $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf
+  > $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
 
-  bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf
-  tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
+  /usr/local/bin/bcftools-1.6/bcftools index \
+  -t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi \
+  $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
+  # bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf
+  # tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
 fi
 
 echo "########### MutSpect PipeLine ###########"
