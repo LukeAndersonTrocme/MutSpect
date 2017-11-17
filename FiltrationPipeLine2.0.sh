@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 ##Merged three bed files using bedtools unionbedg
 ##see evernote for documentation
 TimeStamp=$(date +%Y-%m-%d)

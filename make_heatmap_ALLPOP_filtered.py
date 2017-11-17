@@ -99,7 +99,7 @@ for p in range(len(groups)):
         for pop_ind2 in range(pop_ind1)+range(pop_ind1+1,len(pops[ThisPop])):
             ratio_list=[]
             pop=pops[ThisPop][pop_ind2]
-            print refpop, pop
+            #print refpop, pop
             ratio_grid=np.zeros((row,col))
             sig_x,sig_y=[],[]
             for i in range(row):

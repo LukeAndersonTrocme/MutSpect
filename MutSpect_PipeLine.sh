@@ -1,8 +1,7 @@
 #!/bin/bash
 ##set python environment to python2
 source activate python2
-#import os.path
-
+set -e
 inputVCF=$1
 chrom=$2
 name=$3
