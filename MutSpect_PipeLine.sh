@@ -21,7 +21,6 @@ cp get_finescale_mut_spectra_pep8.py $outputDirectory/scripts/get_finescale_mut_
 cp make_heatmap_ASN_filtered.py $outputDirectory/scripts/make_heatmap_ASN_filtered_$name.py
 cp Make_PCA.R $outputDirectory/scripts/Make_PCA_$name.R
 cp FreqSpectPlot.R $outputDirectory/scripts/FreqSpectPlot_$name.R
-cp Filter_VCF.sh $outputDirectory/scripts/Filter_VCF_$name.sh
 cp MutSpect_PipeLine.sh $outputDirectory/scripts/MutSpect_PipeLine_$name.sh
 
 
