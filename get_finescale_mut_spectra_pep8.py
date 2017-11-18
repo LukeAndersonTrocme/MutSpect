@@ -115,14 +115,15 @@ def main(args):
     while anc_ind < len(anc_lines):
         s = anc_lines[anc_ind].strip('\n').split(' ')
         #print('s is :  ' +str(s))
-        if len(s)<2:
-            print("oops")
-            next
-        if s[1] == 'SNP':
-            anc_lines[anc_ind] = deepcopy(s)
-            anc_ind += 1
-        else:
-            anc_lines.pop(anc_ind)
+        try :
+            if s[1] == 'SNP':
+                anc_lines[anc_ind] = deepcopy(s)
+                anc_ind += 1
+            else:
+                anc_lines.pop(anc_ind)
+        except IndexError:
+            print "indexError.. Check inputVCF"
+            continue
     anc_ind = 0
 
     print "mutations per pop"
