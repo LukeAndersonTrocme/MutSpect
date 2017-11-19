@@ -150,19 +150,6 @@ if [ ! -f $fileTest ]; then
   tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz
 fi
 
-echo "########### Position Of MutSpect (filtered 0.01) ###########"
-bash PositionOfMutSpect.sh \
-$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
-filtered \
-$chrom \
-$outputDIR
-
-echo "########### Plot Filter ###########"
-Rscript PlotFilter.R \
-$outputDIR/unfiltered+chr$chrom+Context_TestVariants_position.txt \
-$outputDIR/filtered+chr$chrom+Context_TestVariants_position.txt \
-$outputDIR
-
 echo "########### MutSpect PipeLine (filtered 0.01)###########"
 bash MutSpect_PipeLine.sh \
 $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
@@ -198,6 +185,20 @@ if [ ! -f $fileTest ]; then
   $outputDIR/NAGJapan_filtered0.01_freq.frq \
   $outputDIR/filtered_0.01
 fi
+
+
+echo "########### Position Of MutSpect (filtered 0.01) ###########"
+bash PositionOfMutSpect.sh \
+$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
+filtered \
+$chrom \
+$outputDIR
+
+echo "########### Plot Filter ###########"
+Rscript PlotFilter.R \
+$outputDIR/unfiltered+chr$chrom+Context_TestVariants_position.txt \
+$outputDIR/filtered+chr$chrom+Context_TestVariants_position.txt \
+$outputDIR
 
 end=`date +%s`
 runtime=$((end-start))
