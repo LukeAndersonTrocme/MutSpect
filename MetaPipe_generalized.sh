@@ -18,8 +18,8 @@ TimeStamp=$(date +%Y-%m-%d) #TimeStamp used to make the output folder
 HourStamp=$(date +%H-%M)
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
-#PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
-PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
+PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
+#PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
 pathToBed="/Users/luke/genomes/BED_MASKS" #this is where the bed masks are
 #check if folder exists
 mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp
@@ -118,13 +118,18 @@ if [ ! -f $fileTest ]; then
   echo "Rscript FreqSpectPlot.R \
   $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered_freq.frq \
-  $outputDIR/plots/$name
+  $outputDIR/filtered_0.01\
   "
   Rscript FreqSpectPlot.R \
   $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered_freq.frq \
-  $outputDIR/plots/$name
+  $outputDIR/filtered_0.01
 
+  echo "Rscript Get_Fixed_Sites.R \
+  $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
+  $outputDIR/NAGJapan_filtered_freq.frq \
+  $outputDIR\
+  "
   Rscript Get_Fixed_Sites.R \
   $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered_freq.frq \
@@ -186,12 +191,12 @@ if [ ! -f $fileTest ]; then
   echo "Rscript FreqSpectPlot.R \
   $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered_freq.frq \
-  $outputDIR/plots/$name
+  $outputDIR/filtered_0.01
   "
   Rscript FreqSpectPlot.R \
   $outputDIR/1000Genome_filtered0.01_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered0.01_freq.frq \
-  $outputDIR/plots/$name
+  $outputDIR/filtered_0.01
 fi
 
 end=`date +%s`

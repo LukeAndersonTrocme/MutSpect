@@ -20,17 +20,17 @@ start=`date +%s`
 # 3 bed masks : nestedRepeats, phastCons100way and strict_mask
 # Remove : low Qual, missing > 1%, max AF 98%
 # Keep only biallelic snps
-echo '/usr/local/bin/bcftools-1.6/bcftools filter \
---regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
-$inputVCF \
-| /usr/local/bin/bcftools-1.6/bcftools filter \
--e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
-| /usr/local/bin/bcftools-1.6/bcftools view \
--m2 -M2 -v snps --output-type z \
---output-file \
-$outputDIR/$name.3bed_filtered.vcf.gz \
-| /usr/local/bin/bcftools-1.6/bcftools index \
--t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi'
+# echo '/usr/local/bin/bcftools-1.6/bcftools filter \
+# --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+# $inputVCF \
+# | /usr/local/bin/bcftools-1.6/bcftools filter \
+# -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
+# | /usr/local/bin/bcftools-1.6/bcftools view \
+# -m2 -M2 -v snps --output-type z \
+# --output-file \
+# $outputDIR/$name.3bed_filtered.vcf.gz \
+# | /usr/local/bin/bcftools-1.6/bcftools index \
+# -t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi'
 
 /usr/local/bin/bcftools-1.6/bcftools filter \
 --regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
