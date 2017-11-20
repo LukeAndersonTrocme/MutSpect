@@ -11,6 +11,7 @@ outputDirectory=$4
 repos="/Users/luke/bin/smaller_mut_spectrum_pipeline/"
 mkdir $outputDirectory/$name.MutSpect
 mkdir $outputDirectory/$name.MutSpect/plots
+mkdir $outputDirectory/$name.MutSpect/files
 
 outputDIR="$outputDirectory/$name.MutSpect"
 ##change to the respository
@@ -29,7 +30,7 @@ cp MutSpect_PipeLine.sh $outputDirectory/scripts/MutSpect_PipeLine_$name.sh
  -vcf $inputVCF \
  -id $repos/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
  -repos $repos \
- -out $outputDIR/$name
+ -out $outputDirectory/$name.MutSpect/files
  "
 ##convert VCF to popMutSpect and indMutSpect
 python get_finescale_mut_spectra_pep8.py \
@@ -37,7 +38,7 @@ python get_finescale_mut_spectra_pep8.py \
 -vcf $inputVCF \
 -id $repos/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
 -repos $repos \
--out $outputDIR/$name
+-out $outputDirectory/$name.MutSpect/files
 
 echo "########## SECOND STEP : \
 python make_heatmap_BIGPOP_filtered.py \
