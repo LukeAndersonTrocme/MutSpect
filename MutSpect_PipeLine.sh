@@ -63,7 +63,7 @@ python make_heatmap_ALLPOP_filtered.py \
  ##make R plots
 echo "########## THIRD STEP : \
 Rscript Make_PCA.R \
-$outputDIR/$name \
+$outputDIR/files/ \
 $chrom \
 $repos \
 $outputDIR/plots/$name"
