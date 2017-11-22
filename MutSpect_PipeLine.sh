@@ -42,21 +42,21 @@ python get_finescale_mut_spectra_pep8.py \
 
 echo "########## SECOND STEP : \
 python make_heatmap_BIGPOP_filtered.py \
--i $outputDIR/files/$name \
+-i $outputDIR/files/ \
 -out $outputDIR/plots/$name"
 ##make heatmaps
 python make_heatmap_BIGPOP_filtered.py \
--i $outputDIR/files/$name \
+-i $outputDIR/files/ \
 -out $outputDIR/plots/$name \
 -chrom $chrom
 
 echo "########## SECOND STEP : \
 python make_heatmap_ALLPOP_filtered.py \
--i $outputDIR/files/$name \
+-i $outputDIR/files/ \
 -out $outputDIR/plots/$name"
 ##make heatmaps
 python make_heatmap_ALLPOP_filtered.py \
--i $outputDIR/files/$name \
+-i $outputDIR/files/ \
 -out $outputDIR/plots/$name \
 -chrom $chrom
 
