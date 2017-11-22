@@ -27,8 +27,8 @@ fi
 
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
-#PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
-PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
+PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
+#PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
 pathToBed="/Users/luke/genomes/BED_MASKS" #this is where the bed masks are
 #check if folder exists
 mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp

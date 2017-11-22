@@ -69,7 +69,7 @@ $repos \
 $outputDIR/plots/$name"
 
 Rscript Make_PCA.R \
-$outputDIR/$name \
+$outputDIR/files/ \
 $chrom \
 $repos \
 $outputDIR/plots/$name
