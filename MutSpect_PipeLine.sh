@@ -38,25 +38,25 @@ python get_finescale_mut_spectra_pep8.py \
 -vcf $inputVCF \
 -id $repos/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
 -repos $repos \
--out $outputDirectory/$name.MutSpect/files
+-out $outputDirectory/$name.MutSpect/files/
 
 echo "########## SECOND STEP : \
 python make_heatmap_BIGPOP_filtered.py \
--i $outputDIR/$name \
+-i $outputDIR/files/$name \
 -out $outputDIR/plots/$name"
 ##make heatmaps
 python make_heatmap_BIGPOP_filtered.py \
--i $outputDIR/$name \
+-i $outputDIR/files/$name \
 -out $outputDIR/plots/$name \
 -chrom $chrom
 
 echo "########## SECOND STEP : \
 python make_heatmap_ALLPOP_filtered.py \
--i $outputDIR/$name \
+-i $outputDIR/files/$name \
 -out $outputDIR/plots/$name"
 ##make heatmaps
 python make_heatmap_ALLPOP_filtered.py \
--i $outputDIR/$name \
+-i $outputDIR/files/$name \
 -out $outputDIR/plots/$name \
 -chrom $chrom
 
