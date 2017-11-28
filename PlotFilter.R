@@ -1,5 +1,5 @@
 library(ggplot2)
-library(Biostrings)
+suppressMessages(library(Biostrings))
 args = commandArgs(trailingOnly=T)
 #read files
 #p.preFilter<-read.table("~/Documents/MutSpect/MutSpectPosition/PreFilter+Context_TestVariants_position.txt")
