@@ -24,6 +24,7 @@ cp FreqSpectPlot.R $outputDirectory/scripts/FreqSpectPlot_$name.R
 cp MutSpect_PipeLine.sh $outputDirectory/scripts/MutSpect_PipeLine_$name.sh
 
 
+startStep=`date +%s` #timer
  echo "########## FIRST STEP : \
  python get_finescale_mut_spectra_pep8.py \
  -chrom $chrom \
@@ -32,6 +33,7 @@ cp MutSpect_PipeLine.sh $outputDirectory/scripts/MutSpect_PipeLine_$name.sh
  -repos $repos \
  -out $outputDirectory/$name.MutSpect/files
  "
+
 ##convert VCF to popMutSpect and indMutSpect
 python get_finescale_mut_spectra_pep8.py \
 -chrom $chrom \
@@ -40,6 +42,9 @@ python get_finescale_mut_spectra_pep8.py \
 -repos $repos \
 -out $outputDirectory/$name.MutSpect/files/
 
+echo "########### Time to run get_finescale_mut_spectra_pep8 on chr $chrom is : \
+$((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
+startStep=`date +%s` #timer
 echo "########## SECOND STEP : \
 python make_heatmap_BIGPOP_filtered.py \
 -i $outputDIR/files/ \
@@ -50,6 +55,10 @@ python make_heatmap_BIGPOP_filtered.py \
 -out $outputDIR/plots/$name \
 -chrom $chrom
 
+echo "########### Time to run make_heatmap_BIGPOP_filtered on chr $chrom is : \
+$((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
+startStep=`date +%s` #timer
+
 echo "########## SECOND STEP : \
 python make_heatmap_ALLPOP_filtered.py \
 -i $outputDIR/files/ \
@@ -59,6 +68,10 @@ python make_heatmap_ALLPOP_filtered.py \
 -i $outputDIR/files/ \
 -out $outputDIR/plots/$name \
 -chrom $chrom
+
+echo "########### Time to run make_heatmap_ALLPOP_filtered on chr $chrom is : \
+$((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
+startStep=`date +%s` #timer
 
  ##make R plots
 echo "########## THIRD STEP : \
@@ -73,3 +86,5 @@ $outputDIR/files/ \
 $chrom \
 $repos \
 $outputDIR/plots/$name
+echo "########### Time to run Make_PCA on chr $chrom is : \
+$((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"

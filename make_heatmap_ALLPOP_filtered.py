@@ -86,7 +86,8 @@ for p in range(len(groups)):
     print(ThisPop)
     for pop in pops[ThisPop]:
         print(pop)
-        pop_counts[pop]=frequency_breakdown(pop,int(args.chrom), int(args.chrom)+1)
+        pop_counts[pop]=frequency_breakdown(pop,1, 22)
+        #pop_counts[pop]=frequency_breakdown(pop,int(args.chrom), int(args.chrom)+1)
         num_variants[pop]=pop_counts[pop].sum()
 
     name=dict({})
