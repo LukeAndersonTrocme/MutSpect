@@ -5,13 +5,16 @@ import numpy as np
 from scipy.stats import chi2_contingency
 import math
 import argparse
+import os
+import subprocess
+
 
 if __name__ == "__main__":
         parser = argparse.ArgumentParser(description='make heatmaps for mutation spectra')
         parser.add_argument('-i', dest='inputroot', help='should be same as outputroot from get_finescale_mut_spectra_nosingle_argparse.py')
         parser.add_argument('-out', dest='outputroot', help='output directory')
         parser.add_argument('-chrom', dest='chrom')
-
+        parser.add_argument('-filter', dest='filter', nargs='?', const=1, default='')
         args = parser.parse_args()
 
 comp=dict({})
@@ -42,8 +45,23 @@ for (b2,d) in [('A','T'),('A','C'),('A','G'),('C','T'),('C','G'),('C','A')]:
 
 def frequency_breakdown(pop,start_chr, end_chr):
     count_array=np.full((row,col),0.0000001)
+    countChrom=[]
     for chrom in range(start_chr,end_chr):
-        infile=open(args.inputroot+'mut_type_v_allele_freq_'+pop+'_chr'+str(chrom)+'_nosingle.txt')
+
+        folder=args.inputroot+str(chrom)+'/'
+        if not os.path.exists(folder):
+            continue
+        t=subprocess.Popen("ls -t %s | head -1" % folder,
+            stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+        time, err = t.communicate() #read the latest folder
+        time=str(time[:-1].decode("utf-8")) #convert it to a string
+        date=args.inputroot[-11:-1] #get date, used in folder name
+        inFile='{}{}/{}/{}.chr{}{}.MutSpect/files/mut_type_v_allele_freq_{}_chr{}_nosingle.txt'\
+                .format(args.inputroot,chrom,time,date,chrom,args.filter,pop,chrom)
+        infile=open(inFile) #read file
+        print ("########## Read file "+inFile)
+
+
         lines=infile.readlines()
         infile.close()
 
@@ -86,8 +104,8 @@ for p in range(len(groups)):
     print(ThisPop)
     for pop in pops[ThisPop]:
         print(pop)
-        #pop_counts[pop]=frequency_breakdown(pop,1, 22)
-        pop_counts[pop]=frequency_breakdown(pop,int(args.chrom), int(args.chrom)+1)
+        pop_counts[pop]=frequency_breakdown(pop,1, 22)
+        #pop_counts[pop]=frequency_breakdown(pop,int(args.chrom), int(args.chrom)+1)
         num_variants[pop]=pop_counts[pop].sum()
 
     name=dict({})

@@ -10,6 +10,7 @@ echo "\
 chrom=$1 #this is the chromosome we're dealing with
 if [ $2 = "test" ]; then
 	TestMode=true
+	echo "#%$%@%#$# TEST  MODE #%$%@%#$#"
 fi
 
 if [ -z "$3" ] #check if specified TimeStamp is supplied
@@ -32,8 +33,8 @@ fi
 
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
-#PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
-PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
+PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
+#PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
 pathToBed="/Users/luke/genomes/BED_MASKS" #this is where the bed masks are
 #check if folder exists
 mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp
@@ -72,17 +73,31 @@ start=`date +%s` #timer
 startStep=`date +%s` #timer
 #Take inputVCF filter low qual sites
 
-if [ TestMode = true ]; then
+if [ "$TestMode" = true ]; then
+	echo "#%$%@%#$# TEST  MODE inside if statement #%$%@%#$#" 
 	mkdir -p TestMode/{Nag,hg19/phase3}
-	gzcat $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
-	| head -100000 | bgzip \
-	> TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+	if [ ! -f TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz.tbi ]; then
+
+		gzcat $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
+		| head -100000 | bgzip -f -c \
+		> TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+
+		tabix -f TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+		echo "Got first 100000 lines in NAG"
+	fi
+
+	if [ ! -f TestMode/hg19/phase3/\
+ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz.tbi ]; then
+        	gzcat $PathToGenome/hg19/phase3/\
+ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
+        	| head -100000 | bgzip -f -c \
+        	> TestMode/hg19/phase3/\
+ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz 
 	
-        gzcat $PathToGenome/hg19/phase3/\
-	ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
-        | head -100000 | bgzip \
-        > TestMode/hg19/phase3/\
-	ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+	 	tabix -f TestMode/hg19/phase3/\
+ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+		echo "Got first 100000 lines in 1000G"	 	
+	fi
 	PathToGenome="TestMode"
 fi
 	
@@ -278,11 +293,11 @@ $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
 $outputDIR/NAGJapan_filtered_freq.frq \
 $outputDIR/filtered
 
-if [ TestMode = true ]; then
-	rm TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
-	rm TestMode/hg19/phase3/\
-        ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
-fi
+#if [ TestMode = true ]; then
+#	rm TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+#	rm TestMode/hg19/phase3/\
+#        ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+#fi
 
 
 echo "# # # # # # Time to run pipeline on chr $chrom is : $((($(date +%s)-$start)/60)) minutes or $((($(date +%s)-$start)/60/60)) hours"
