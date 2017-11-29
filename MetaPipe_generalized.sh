@@ -8,23 +8,26 @@ echo "\
 "
 
 chrom=$1 #this is the chromosome we're dealing with
+if [ $2 = "test" ]; then
+	TestMode=true
+fi
 
-if [ -z "$2" ] #check if specified TimeStamp is supplied
+if [ -z "$3" ] #check if specified TimeStamp is supplied
   then
     echo "No TimeStamp argument supplied. Using Today."
     TimeStamp=$(date +%Y-%m-%d) #TimeStamp used to make the output folder
 else
   echo "Using TimeStamp input argument"
-  TimeStamp=$2
+  TimeStamp=$3
 fi
 
-if [ -z "$3" ]
+if [ -z "$4" ]
   then
     echo "No HourStamp argument supplied. Using Now."
     HourStamp=$(date +%H-%M)
 else
   echo "Using HourStamp input argument"
-  HourStamp=$3
+  HourStamp=$4
 fi
 
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
@@ -51,7 +54,7 @@ cp PositionOfMutSpect.sh $outputDIR/scripts/
 cp FreqSpectPlot.R $outputDIR/scripts/
 cp PlotFilter.R $outputDIR/scripts/
 
-echo "########### Time since last Git Commit ###########"
+echo "# # # # # # Time since last Git Commit ###########"
 echo "MetaPipe_generalized.sh"
 git log -1 --format=%cd MetaPipe_generalized.sh
 echo "FiltrationPipeLine2.0.sh"
@@ -69,6 +72,20 @@ start=`date +%s` #timer
 startStep=`date +%s` #timer
 #Take inputVCF filter low qual sites
 
+if [ TestMode = true ]; then
+	mkdir -p TestMode/{Nag,hg19/phase3}
+	gzcat $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
+	| head -100000 | bgzip \
+	> TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+	
+        gzcat $PathToGenome/hg19/phase3/\
+	ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
+        | head -100000 | bgzip \
+        > TestMode/hg19/phase3/\
+	ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+	PathToGenome="TestMode"
+fi
+	
 if [ ! -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz ]; then
   echo "########### 1 : Nag Filtration ###########"
   bash FiltrationPipeLine2.0.sh \
@@ -92,7 +109,7 @@ else echo "File Exists : $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz "
 fi
 
 wait
-echo "########### Time to run Filtration pipeline on chr $chrom is : \
+echo "# # # # # # Time to run Filtration pipeline on chr $chrom is : \
 $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 startStep=`date +%s` #timer
 
@@ -112,7 +129,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz ]; then
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz"
 fi
 
-echo "########### Time to run merging step on chr $chrom is : \
+echo "# # # # # # Time to run merging step on chr $chrom is : \
 $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 
 
@@ -154,7 +171,7 @@ if [ ! -f $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq ]; then
   $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
   $outputDIR/NAGJapan_filtered_freq.frq \
   $outputDIR
-  echo "########### Time to run Get_Fixed_Sites step on chr $chrom is : \
+  echo "# # # # # # Time to run Get_Fixed_Sites step on chr $chrom is : \
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 
 else echo "File Exists : $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq "
@@ -172,7 +189,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf
   && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf \
   && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz #\
   #& echo "  #   #   #  Exclude 0.01 Sites  Kill PID : $!"
-  echo "########### Time to run Exclude 0.01 Sites step on chr $chrom is : \
+  echo "# # # # # # Time to run Exclude 0.01 Sites step on chr $chrom is : \
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
 fi
@@ -219,7 +236,7 @@ else echo "File Exists : $outputDIR/1000Genome_filtered0.01_JUST_JPT_freq.frq"
 fi
 
 wait
-echo "########### Time to run SITE FREQUENCY SPECTRUM PLOT (filtered 0.01) step on chr $chrom is : \
+echo "# # # # # # Time to run SITE FREQUENCY SPECTRUM PLOT (filtered 0.01) step on chr $chrom is : \
 $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 echo "########### Position Of MutSpect (unfiltered)###########"
 bash PositionOfMutSpect.sh \
@@ -261,4 +278,11 @@ $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
 $outputDIR/NAGJapan_filtered_freq.frq \
 $outputDIR/filtered
 
-echo "########### Time to run pipeline on chr $chrom is : $((($(date +%s)-$start)/60)) minutes or $((($(date +%s)-$start)/60/60)) hours"
+if [ TestMode = true ]; then
+	rm TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+	rm TestMode/hg19/phase3/\
+        ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+fi
+
+
+echo "# # # # # # Time to run pipeline on chr $chrom is : $((($(date +%s)-$start)/60)) minutes or $((($(date +%s)-$start)/60/60)) hours"
