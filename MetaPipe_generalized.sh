@@ -10,7 +10,7 @@ echo "\
 chrom=$1 #this is the chromosome we're dealing with
 if [ $2 = "test" ]; then
 	TestMode=true
-	echo "#%$%@%#$# TEST  MODE #%$%@%#$#"
+	echo "#%$%@%# TEST  MODE #%$%@%#"
 fi
 
 if [ -z "$3" ] #check if specified TimeStamp is supplied
@@ -34,68 +34,51 @@ fi
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
 PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
-#PathToGenome="/Users/luke/genomes/genomes/test22" #this is where the data is
+
 pathToBed="/Users/luke/genomes/BED_MASKS" #this is where the bed masks are
+
 #check if folder exists
-mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp
-#make a new directory for hour/minutes
-mkdir -p "/Users/luke/Documents/MutSpect/FilteredData/$TimeStamp/$chrom"
+mkdir -p /Users/luke/Documents/MutSpect/FilteredData/$TimeStamp/$chrom/$HourStamp/scripts
 #set outputDIR
 outputDIR="/Users/luke/Documents/MutSpect/FilteredData/$TimeStamp/$chrom/$HourStamp"
-mkdir -p $outputDIR
-mkdir -p $outputDIR/scripts
+
 #git rev-parse HEAD > $outputDIR/git_info.txt #(pointing to script directory)
 #git checkout ^ this number to get back to that state
 
 #copy all scripts for reproducibility
-cp MetaPipe_generalized.sh $outputDIR/scripts/
-cp FiltrationPipeLine2.0.sh $outputDIR/scripts/
-cp MutSpect_PipeLine.sh $outputDIR/scripts/
-cp PositionOfMutSpect.sh $outputDIR/scripts/
-cp FreqSpectPlot.R $outputDIR/scripts/
-cp PlotFilter.R $outputDIR/scripts/
+cp {MetaPipe_generalized.sh, FiltrationPipeLine2.0.sh, MutSpect_PipeLine.sh, \
+PositionOfMutSpect.sh, FreqSpectPlot.R, PlotFilter.R} $outputDIR/scripts/
 
 echo "# # # # # # Time since last Git Commit ###########"
-echo "MetaPipe_generalized.sh"
-git log -1 --format=%cd MetaPipe_generalized.sh
-echo "FiltrationPipeLine2.0.sh"
-git log -1 --format=%cd FiltrationPipeLine2.0.sh
-echo "MutSpect_PipeLine.sh"
-git log -1 --format=%cd MutSpect_PipeLine.sh
-echo "PositionOfMutSpect.sh"
-git log -1 --format=%cd PositionOfMutSpect.sh
-echo "FreqSpectPlot.R"
-git log -1 --format=%cd FreqSpectPlot.R
-echo "PlotFilter.R"
-git log -1 --format=%cd PlotFilter.R
+for x in \
+MetaPipe_generalized.sh \
+FiltrationPipeLine2.0.sh \
+MutSpect_PipeLine.sh \
+PositionOfMutSpect.sh \
+FreqSpectPlot.R\
+PlotFilter.R; \
+do echo $x $(git log -1 --format=%cd -- $x); done	
 
 start=`date +%s` #timer
 startStep=`date +%s` #timer
 #Take inputVCF filter low qual sites
 
-if [ "$TestMode" = true ]; then
-	echo "#%$%@%#$# TEST  MODE inside if statement #%$%@%#$#" 
-	mkdir -p TestMode/{Nag,hg19/phase3}
-	if [ ! -f TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz.tbi ]; then
-
-		gzcat $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
-		| head -100000 | bgzip -f -c \
-		> TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
-
-		tabix -f TestMode/Nag/allSamples.$chrom.genotyped.vcf.gz
+Nag="allSamples.$chrom.genotyped.vcf.gz"
+Thou="ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz"
+if [ "$TestMode" = true ]; then 
+	mkdir -p TestMode/{NAG,hg19/phase3}
+	if [ ! -f TestMode/NAG/${Nag}.tbi ]; then
+		gzcat $PathToGenome/NAG/$Nag \
+		| head -50000 | bgzip -f -c \
+		> TestMode/NAG/$Nag
+		tabix -f TestMode/NAG/$Nag
 		echo "Got first 100000 lines in NAG"
 	fi
-
-	if [ ! -f TestMode/hg19/phase3/\
-ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz.tbi ]; then
-        	gzcat $PathToGenome/hg19/phase3/\
-ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz \
-        	| head -100000 | bgzip -f -c \
-        	> TestMode/hg19/phase3/\
-ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz 
-	
-	 	tabix -f TestMode/hg19/phase3/\
-ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+	if [ ! -f TestMode/hg19/phase3/${Thou}.tbi ]; then
+        	gzcat $PathToGenome/hg19/phase3/$Thou \
+        	| head -50000 | bgzip -f -c \
+        	> TestMode/hg19/phase3/$Thou \ 
+	 	tabix -f TestMode/hg19/phase3/$Thou \
 		echo "Got first 100000 lines in 1000G"	 	
 	fi
 	PathToGenome="TestMode"
