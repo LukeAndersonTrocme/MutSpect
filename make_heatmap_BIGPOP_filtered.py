@@ -83,7 +83,7 @@ for group in groups:
 
 for p in range(len(groups)):
     ThisPop = groups[p]
-    print(ThisPop)
+    #print(ThisPop)
     pop_counts[ThisPop]=frequency_breakdown(ThisPop,int(args.chrom), int(args.chrom)+1)
     num_variants[ThisPop]=pop_counts[ThisPop].sum()
 
