@@ -65,7 +65,7 @@ for(f in 1:nrow(cat)){
 	}
 	else{cat$color[f]='black'}
 	}
-	
+
 cat$Mut<-factor(cat$Mut, levels=cat[order(-cat$freq),]$Mut)
 
 #mean<-mean(cat1$freq)
@@ -73,4 +73,4 @@ cat$Mut<-factor(cat$Mut, levels=cat[order(-cat$freq),]$Mut)
 ggplot(cat, aes(x=cat$Mut,y =cat$freq, fill=cat$color))+geom_bar(stat="identity")+theme_minimal()+ylab("fraction of sites removed")+xlab("Mutation Type")+ggtitle("Fraction of sites remove for each mutation type", "Filter applied : .postFilter")+theme(axis.text.x=element_text(angle = 90), plot.title =element_text(hjust=0.5), plot.subtitle=element_text(hjust=0.5))
 #ggsave(paste("~/Documents/MutSpect/MutSpectPosition/FractionOfSitesRemoved.jpg",sep=""))
 
-ggsave(paste(args[3],"FractionOfSitesRemoved",".jpg",sep=""),height=5,width=20)
+ggsave(paste(args[3],"/FractionOfSitesRemoved",".jpg",sep=""),height=5,width=20)
