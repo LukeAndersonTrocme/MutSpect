@@ -67,21 +67,21 @@ def main(args):
                         muts.append((b1 + b2 + b3, b4))
     #print muts
     ##Open VCF file
-    print 'opening file'
+    #print 'opening file'
     vcf = gzip.open(args.vcf)
-    print 'file open : ' + args.vcf
+    #print 'file open : ' + args.vcf
     ##Get Line number of VCF (used for progress bar)
     lineString = os.popen("gzcat "
                         + args.vcf
                         + " | grep -v '^#' | wc -l ").read()
-    print 'this is the lineNumbers  :' + lineString
+    #print 'this is the lineNumbers  :' + lineString
     lineNo = int(lineString.split()[0])
 
     line_vcf = vcf.readline()
     while not line_vcf.startswith('#CHROM'):
         line_vcf = vcf.readline()
 
-    print 'fast forwarded through file'
+    #print 'fast forwarded through file'
     s_vcf = line_vcf.strip('\n').split('\t')
     num_lineages = 2 * (len(s_vcf) - 9)
 
@@ -102,14 +102,14 @@ def main(args):
     for pop in allpops:
         indices[pop] = []
 
-    print "count indices"
+    #print "count indices"
     for i in range(9, len(s_vcf)):
         popul[i] = pop_thisID[s_vcf[i]]
         indices[popul[i]].append(i)
 
     count=dict({})
 
-    print "ancestral lines"
+    #print "ancestral lines"
     anc_lines.pop(0)
     anc_ind = 0
     while anc_ind < len(anc_lines):
@@ -126,7 +126,7 @@ def main(args):
             continue
     anc_ind = 0
 
-    print "mutations per pop"
+    #print "mutations per pop"
     output = dict({})
     mut_count = dict({})
     for pop in allpops:
@@ -143,7 +143,7 @@ def main(args):
         output_derived += ' ' + pop_thisID[s[i]]
         output_derived += '\n'
 
-    print 'get context'
+    #print 'get context'
 
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     ##SANITY CHECKS :
@@ -208,14 +208,14 @@ def main(args):
                     mut_count[(this_mut, pop, count[pop])] += 1
 
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    print "ReverseAnc : " + str(ReverseAnc)
-    print "NonReverseAnc : " + str(NonReverseAnc)
-    print "skippedLines : " + str(lineNo - NonReverseAnc - ReverseAnc)
-    print "Ref_count : " + str(Ref_count)
-    print "Alt_count : " + str(Alt_count)
-    print "MissCount : " + str(MissCount)
-    print "total Genotypes per line : " +str((Ref_count + Alt_count + MissCount)/(ReverseAnc + NonReverseAnc))
-    print "number of Ind : " + str(len(s))
+    # print "ReverseAnc : " + str(ReverseAnc)
+    # print "NonReverseAnc : " + str(NonReverseAnc)
+    # print "skippedLines : " + str(lineNo - NonReverseAnc - ReverseAnc)
+    # print "Ref_count : " + str(Ref_count)
+    # print "Alt_count : " + str(Alt_count)
+    # print "MissCount : " + str(MissCount)
+    # print "total Genotypes per line : " +str((Ref_count + Alt_count + MissCount)/(ReverseAnc + NonReverseAnc))
+    # print "number of Ind : " + str(len(s))
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
     for pop in allpops:
