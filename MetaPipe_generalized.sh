@@ -46,8 +46,8 @@ outputDIR="/Users/luke/Documents/MutSpect/FilteredData/$TimeStamp/$chrom/$HourSt
 #git checkout ^ this number to get back to that state
 
 #copy all scripts for reproducibility
-cp {MetaPipe_generalized.sh, FiltrationPipeLine2.0.sh, MutSpect_PipeLine.sh, \
-PositionOfMutSpect.sh, FreqSpectPlot.R, PlotFilter.R} $outputDIR/scripts/
+cp ./{MetaPipe_generalized.sh,FiltrationPipeLine2.0.sh,MutSpect_PipeLine.sh,\
+PositionOfMutSpect.sh,FreqSpectPlot.R,PlotFilter.R} $outputDIR/scripts/
 
 echo "# # # # # # Time since last Git Commit ###########"
 for x in \
@@ -55,9 +55,9 @@ MetaPipe_generalized.sh \
 FiltrationPipeLine2.0.sh \
 MutSpect_PipeLine.sh \
 PositionOfMutSpect.sh \
-FreqSpectPlot.R\
+FreqSpectPlot.R \
 PlotFilter.R; \
-do echo $x $(git log -1 --format=%cd -- $x); done	
+do echo $x $(git log -1 --format=%cd -- $x); done
 
 start=`date +%s` #timer
 startStep=`date +%s` #timer
@@ -65,25 +65,26 @@ startStep=`date +%s` #timer
 
 Nag="allSamples.$chrom.genotyped.vcf.gz"
 Thou="ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz"
-if [ "$TestMode" = true ]; then 
+if [ "$TestMode" = true ]; then
 	mkdir -p TestMode/{NAG,hg19/phase3}
 	if [ ! -f TestMode/NAG/${Nag}.tbi ]; then
 		gzcat $PathToGenome/NAG/$Nag \
-		| head -50000 | bgzip -f -c \
+		| head -10000 | bgzip -f -c \
 		> TestMode/NAG/$Nag
 		tabix -f TestMode/NAG/$Nag
-		echo "Got first 100000 lines in NAG"
+		echo "Got first 10000 lines in NAG"
 	fi
 	if [ ! -f TestMode/hg19/phase3/${Thou}.tbi ]; then
-        	gzcat $PathToGenome/hg19/phase3/$Thou \
-        	| head -50000 | bgzip -f -c \
-        	> TestMode/hg19/phase3/$Thou \ 
-	 	tabix -f TestMode/hg19/phase3/$Thou \
-		echo "Got first 100000 lines in 1000G"	 	
+        	echo "inside thou "
+		gzcat $PathToGenome/hg19/phase3/$Thou \
+        	| head -10000 | bgzip -f -c \
+        	> TestMode/hg19/phase3/$Thou
+	 	tabix -f TestMode/hg19/phase3/$Thou
+		echo "Got first 10000 lines in 1000G"
 	fi
 	PathToGenome="TestMode"
 fi
-	
+
 if [ ! -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz ]; then
   echo "########### 1 : Nag Filtration ###########"
   bash FiltrationPipeLine2.0.sh \
@@ -191,6 +192,41 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
 fi
+
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz ]; then
+  startStep=`date +%s` #timer
+  echo "########### Exclude 0.01 Sites ###########"
+  vcftools \
+  --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
+  --chr $chrom \
+  --positions $outputDIR/RemoveSites_0.01.txt \
+  --recode --recode-INFO-all \
+  --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01 \
+
+
+  #& echo "  #   #   #  Exclude 0.01 Sites  Kill PID : $!"
+  echo "# # # # # # Time to run KEEP 0.01 Sites step on chr $chrom is : \
+  $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
+
+  mkdir -p $outputDIR/OnlyBadSites/{files,plots}
+
+  python get_finescale_mut_spectra_pep8.py \
+  -chrom $chrom \
+  -vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf \
+  -id $repos/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
+  -repos /Users/luke/bin/smaller_mut_spectrum_pipeline \
+  -out $outputDIR/OnlyBadSites/files
+
+  Rscript Make_PCA.R \
+  $outputDIR/OnlyBadSites/files/ \
+  $chrom \
+  /Users/luke/bin/smaller_mut_spectrum_pipeline \
+  $outputDIR/OnlyBadSites/plots/$name
+  
+else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
+fi
+
+
 
 # pre=($(zgrep -Ec "$" /$outputDIR/1kGenome_NAG_filtered_chr$chrom.recode.vcf.gz))
 # post=($(zgrep -Ec "$" $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz))
