@@ -30,7 +30,7 @@ else
   echo "Using HourStamp input argument"
   HourStamp=$4
 fi
-
+source activate python2
 cd /Users/luke/bin/smaller_mut_spectrum_pipeline
 
 PathToGenome="/Users/luke/genomes/genomes" #this is where the data is
@@ -202,7 +202,8 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
   --positions $outputDIR/RemoveSites_0.01.txt \
   --recode --recode-INFO-all \
   --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01 \
-
+  && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf \
+  && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz
 
   #& echo "  #   #   #  Exclude 0.01 Sites  Kill PID : $!"
   echo "# # # # # # Time to run KEEP 0.01 Sites step on chr $chrom is : \
@@ -212,17 +213,17 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
 
   python get_finescale_mut_spectra_pep8.py \
   -chrom $chrom \
-  -vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf \
-  -id $repos/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
-  -repos /Users/luke/bin/smaller_mut_spectrum_pipeline \
-  -out $outputDIR/OnlyBadSites/files
+  -vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz \
+  -id /Users/luke/bin/smaller_mut_spectrum_pipeline/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
+  -repos /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
+  -out $outputDIR/OnlyBadSites/files/
 
   Rscript Make_PCA.R \
   $outputDIR/OnlyBadSites/files/ \
   $chrom \
-  /Users/luke/bin/smaller_mut_spectrum_pipeline \
+  /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   $outputDIR/OnlyBadSites/plots/$name
-  
+
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
 fi
 
