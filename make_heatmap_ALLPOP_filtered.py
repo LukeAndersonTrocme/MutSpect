@@ -52,7 +52,7 @@ def frequency_breakdown(pop,start_chr, end_chr):
 #        while float(s[start_ind])<0.01:
 #            start_ind+=1
         if len(s)<2:
-            print("NoData")
+            #print("NoData")
             break
         end_ind=len(s)-2
         while 1.0*end_ind/(len(s)-2)>0.98:
