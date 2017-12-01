@@ -112,8 +112,9 @@ def main(args):
     #print "ancestral lines"
     anc_lines.pop(0)
     anc_ind = 0
+    countS=0
     while anc_ind < len(anc_lines):
-        s = anc_lines[anc_ind].strip('\n').split(' ')
+	s = anc_lines[anc_ind].strip('\n').split(' ')
         #print('s is :  ' +str(s))
         try :
             if s[1] == 'SNP':
@@ -123,7 +124,11 @@ def main(args):
                 anc_lines.pop(anc_ind)
         except IndexError:
             print "indexError.. Check inputVCF"
-            continue
+            countS+=1
+	    if countS >= 100:
+		print "Something is wrong"
+		sys.exit()
+	    continue
     anc_ind = 0
 
     #print "mutations per pop"
