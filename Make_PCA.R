@@ -74,18 +74,34 @@ ggplot(data = scores.nag, aes(x = PC1, y = PC2, label = rownames(scores.nag))) +
 #ggsave("/Users/luke/Documents/MutSpect/OutputFiles/plots/NAGjapan_PCA.jpg", height=10, width=10)
 ggsave(paste(out,"_NAG_PCA.jpg", sep=""), height=10, width=10)
 
-if (FALSE){
-#PCA using whole genome data
-#plink2 --file 1000Genome_NAGjapan_filtered_plink --noweb --pca --out 1000Genome_NAGjapan_filtered_plink_PCA
-EigenVAL<-read.table("~/Documents/MutSpect/1000Genome_NAGjapan_filtered_plink_PCA.eigenval")
-Eigen<-read.table("~/Documents/MutSpect/1000Genome_NAGjapan_filtered_plink_PCA.eigenvec")
-Eigen.pop<-merge(Eigen, popNames, by=c("V1"))
-ggplot(data = Eigen.pop, aes(x = V3.x, y = V4.x, label = V3.y, colour = V2.y)) +
-  	geom_text(alpha = 0.8, size = 2, nudge_x=0.0005)+
-  	geom_hline(yintercept = 0, colour = "gray65") +
-  	geom_vline(xintercept = 0, colour = "gray65") +
-  	ggtitle("PCA using Genomic Data")+
-  	theme_classic()+xlab("PC1 : 47.25% Variation Explained")+ylab("PC2 14.46% Variation Explained")+
-  	theme(plot.title = element_text(hjust= 0.5))
-ggsave("/Users/luke/Documents/MutSpect/OutputFiles/plots/PCA_genomicData.jpg", height=10, width=10)
-}
+colnames(tot.count)<-NamePop$V3
+JPT<-tot.count[, grep("JPT", colnames(tot.count))]
+
+pca.JPT = prcomp(t(JPT), scale=T)
+scores.JPT = as.data.frame(pca.JPT$x)
+ggplot(data = scores.JPT, aes(x = PC1, y = PC2, label = rownames(scores.JPT))) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_point(colour = "tomato", alpha = 0.8, size = 1)+
+  ggtitle("PCA using Mutation Spectrum using JPT")+
+  theme_classic()+
+  theme(plot.title = element_text(hjust= 0.5))
+#ggsave("/Users/luke/Documents/MutSpect/OutputFiles/plots/NAGjapan_PCA.jpg", height=10, width=10)
+ggsave(paste(out,"_JPT_PCA.jpg", sep=""), height=10, width=10)
+
+
+
+colnames(tot.count)<-NamePop$V2
+EAS<-tot.count[, grep("EAS", colnames(tot.count))]
+colnames(EAS)<-NamePop[which(NamePop$V2=="EAS"),]$V3
+EAS<-EAS[, -which(colnames(EAS) == "NAG")]
+
+pca.eas = prcomp(t(EAS))
+scores.eas = as.data.frame(pca.eas$x)
+ggplot(data = scores.eas, aes(x = PC1, y = PC2, label = rownames(scores.eas), colour = colnames(EAS))) +
+  geom_text(alpha = 0.8, size = 2)+
+  theme_classic()+
+  ggtitle("PCA using Mutation Spectrum using 1000Genome and NAG")+
+  theme(plot.title = element_text(hjust= 0.5))
+#ggsave("/Users/luke/Documents/MutSpect/OutputFiles/plots/NAGjapan_PCA.jpg", height=10, width=10)
+ggsave(paste(out,"_EAS_PCA.jpg", sep=""), height=10, width=10)
