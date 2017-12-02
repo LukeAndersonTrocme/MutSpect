@@ -199,7 +199,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
   vcftools \
   --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
   --chr $chrom \
-  --positions $outputDIR/RemoveSites_0.01.txt \
+  --positions $outputDIR/MissingInNAG.txt \
   --recode --recode-INFO-all \
   --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01 \
   && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf \
