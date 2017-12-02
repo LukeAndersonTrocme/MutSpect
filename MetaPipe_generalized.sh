@@ -210,6 +210,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 
   mkdir -p $outputDIR/OnlyBadSites/{files,plots}
+  echo "running bad sites for chrom $chrom"
 
   python get_finescale_mut_spectra_pep8.py \
   -chrom $chrom \
@@ -217,13 +218,13 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
   -id /Users/luke/bin/smaller_mut_spectrum_pipeline/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
   -repos /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   -out $outputDIR/OnlyBadSites/files/
-
+  echo "got bad sites for chrom $chrom"
   Rscript Make_PCA.R \
   $outputDIR/OnlyBadSites/files/ \
   $chrom \
   /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   $outputDIR/OnlyBadSites/plots/$name
-
+  echo "PCA bad sites for chrom $chrom"
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
 fi
 
