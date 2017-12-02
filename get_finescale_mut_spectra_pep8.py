@@ -123,11 +123,11 @@ def main(args):
             else:
                 anc_lines.pop(anc_ind)
         except IndexError:
-            print "indexError.. Check inputVCF"
-            countS+=1
-	    if countS >= 100:
-		print "Something is wrong"
-		sys.exit()
+            #print "indexError.. Check inputVCF"
+            #countS+=1
+	    #if countS >= 100:
+		#print "Something is wrong"
+		#sys.exit()
 	    continue
     anc_ind = 0
 
