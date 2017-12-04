@@ -123,7 +123,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz.tbi ]; then
   > $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
 
   /usr/local/bin/bcftools-1.6/bcftools index \
-  -t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi \
+  -t --output-file $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz.tbi \
   $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz"
 fi
@@ -176,37 +176,37 @@ if [ ! -f $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq ]; then
 else echo "File Exists : $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq "
 fi
 
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz.tbi ]; then
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz.tbi ]; then
   startStep=`date +%s` #timer
-  echo "########### Exclude 0.01 Sites ###########"
+  echo "########### Exclude 0.05 Sites ###########"
   vcftools \
   --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
   --chr $chrom \
-  --exclude-positions $outputDIR/RemoveSites_0.01.txt \
+  --exclude-positions $outputDIR/RemoveSites_0.05.txt \
   --recode --recode-INFO-all \
-  --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01 \
-  && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf \
-  && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz #\
-  #& echo "  #   #   #  Exclude 0.01 Sites  Kill PID : $!"
-  echo "# # # # # # Time to run Exclude 0.01 Sites step on chr $chrom is : \
+  --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05 \
+  && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf \
+  && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz #\
+  #& echo "  #   #   #  Exclude 0.05 Sites  Kill PID : $!"
+  echo "# # # # # # Time to run Exclude 0.05 Sites step on chr $chrom is : \
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
-else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
+else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz"
 fi
 
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz.tbi ]; then
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf.gz.tbi ]; then
   startStep=`date +%s` #timer
-  echo "########### Exclude 0.01 Sites ###########"
+  echo "########### Exclude 0.05 Sites ###########"
   vcftools \
   --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
   --chr $chrom \
   --positions $outputDIR/MissingInNAG.txt \
   --recode --recode-INFO-all \
-  --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01 \
-  && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf \
-  && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz
+  --out $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05 \
+  && bgzip -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf \
+  && tabix -f -p vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf.gz
 
-  #& echo "  #   #   #  Exclude 0.01 Sites  Kill PID : $!"
-  echo "# # # # # # Time to run KEEP 0.01 Sites step on chr $chrom is : \
+  #& echo "  #   #   #  Exclude 0.05 Sites  Kill PID : $!"
+  echo "# # # # # # Time to run KEEP 0.05 Sites step on chr $chrom is : \
   $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 
   mkdir -p $outputDIR/OnlyBadSites/{files,plots}
@@ -214,7 +214,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
 
   python get_finescale_mut_spectra_pep8.py \
   -chrom $chrom \
-  -vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz \
+  -vcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf.gz \
   -id /Users/luke/bin/smaller_mut_spectrum_pipeline/1000genomes_phase3_sample_IDs_NAG_SGDP.txt \
   -repos /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   -out $outputDIR/OnlyBadSites/files/
@@ -225,13 +225,13 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.
   /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   $outputDIR/OnlyBadSites/plots/$name
   echo "PCA bad sites for chrom $chrom"
-else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
+else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz"
 fi
 
 
 
 # pre=($(zgrep -Ec "$" /$outputDIR/1kGenome_NAG_filtered_chr$chrom.recode.vcf.gz))
-# post=($(zgrep -Ec "$" $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz))
+# post=($(zgrep -Ec "$" $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz))
 # diff=$((pre-post))
 # prop=$((diff / pre))
 # if [[ ($pre-$post)/$pre > 0.15 ]]; then
@@ -241,38 +241,38 @@ fi
 # else echo "## ## ## ## ## Checked diff, less than 15%"
 # fi
 
-echo "########### MutSpect PipeLine (filtered 0.01)###########"
+echo "########### MutSpect PipeLine (filtered 0.05)###########"
 bash MutSpect_PipeLine.sh \
-$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
+$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
 $chrom \
-$TimeStamp.chr$chrom.RemoveSites_0.01 \
+$TimeStamp.chr$chrom.RemoveSites_0.05 \
 $outputDIR \
-& echo "  #   #   #  MutSpect PipeLine (filtered 0.01)  Kill PID : $!"
+& echo "  #   #   #  MutSpect PipeLine (filtered 0.05)  Kill PID : $!"
 
-if [ ! -f $outputDIR/1000Genome_filtered0.01_JUST_JPT_freq.frq ]; then
+if [ ! -f $outputDIR/1000Genome_filtered0.05_JUST_JPT_freq.frq ]; then
   startStep=`date +%s` #timer
-  echo "########### SITE FREQUENCY SPECTRUM PLOT (filtered 0.01) ###########"
+  echo "########### SITE FREQUENCY SPECTRUM PLOT (filtered 0.05) ###########"
 
   vcftools \
-  --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
+  --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
   --keep /Users/luke/Documents/MutSpect/data/1000genomes_phase3_sample_IDs_JUST_JPT.txt \
   --freq2 \
-  --out $outputDIR/1000Genome_filtered0.01_JUST_JPT_freq \
+  --out $outputDIR/1000Genome_filtered0.05_JUST_JPT_freq \
   & echo "  #   #   #  vcftools JPT  Kill PID : $!"
 
   sleep 10
 
   vcftools \
-  --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
+  --gzvcf $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
   --keep /Users/luke/Documents/MutSpect/data/1000genomes_phase3_sample_IDs_JUST_NAG.txt \
   --freq2  \
-  --out $outputDIR/NAGJapan_filtered0.01_freq \
+  --out $outputDIR/NAGJapan_filtered0.05_freq \
   & echo "  #   #   #  vcftools NAG  Kill PID : $!"
-else echo "File Exists : $outputDIR/1000Genome_filtered0.01_JUST_JPT_freq.frq"
+else echo "File Exists : $outputDIR/1000Genome_filtered0.05_JUST_JPT_freq.frq"
 fi
 
 wait
-echo "# # # # # # Time to run SITE FREQUENCY SPECTRUM PLOT (filtered 0.01) step on chr $chrom is : \
+echo "# # # # # # Time to run SITE FREQUENCY SPECTRUM PLOT (filtered 0.05) step on chr $chrom is : \
 $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 echo "########### Position Of MutSpect (unfiltered)###########"
 bash PositionOfMutSpect.sh \
@@ -281,9 +281,9 @@ unfiltered \
 $chrom \
 $outputDIR
 
-echo "########### Position Of MutSpect (filtered 0.01) ###########"
+echo "########### Position Of MutSpect (filtered 0.05) ###########"
 bash PositionOfMutSpect.sh \
-$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz \
+$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
 filtered \
 $chrom \
 $outputDIR
@@ -297,12 +297,12 @@ $outputDIR
 echo "Rscript FreqSpectPlot.R \
 $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
 $outputDIR/NAGJapan_filtered_freq.frq \
-$outputDIR/filtered_0.01
+$outputDIR/filtered_0.05
 "
 Rscript FreqSpectPlot.R \
-$outputDIR/1000Genome_filtered0.01_JUST_JPT_freq.frq \
-$outputDIR/NAGJapan_filtered0.01_freq.frq \
-$outputDIR/filtered_0.01
+$outputDIR/1000Genome_filtered0.05_JUST_JPT_freq.frq \
+$outputDIR/NAGJapan_filtered0.05_freq.frq \
+$outputDIR/filtered_0.05
 
 echo "Rscript FreqSpectPlot.R \
 $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq \
