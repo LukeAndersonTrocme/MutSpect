@@ -85,7 +85,7 @@ if [ "$TestMode" = true ]; then
 	PathToGenome="TestMode"
 fi
 
-if [ ! -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz ]; then
+if [ ! -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz.tbi ]; then
   echo "########### 1 : Nag Filtration ###########"
   bash FiltrationPipeLine2.0.sh \
   $PathToGenome/NAG/allSamples.$chrom.genotyped.vcf.gz \
@@ -96,7 +96,7 @@ if [ ! -f $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz ]; then
 else echo "File Exists : $outputDIR/NAG_chr$chrom.3bed_filtered.vcf.gz "
 fi
 
-if [ ! -f $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz ]; then
+if [ ! -f $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz.tbi ]; then
   echo "########### 2 : 1000Genome Filtration ###########"
   sleep 10
   bash FiltrationPipeLine2.0.sh \
@@ -113,7 +113,7 @@ $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) 
 startStep=`date +%s` #timer
 
 #merge both files
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz ]; then
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz.tbi ]; then
   echo "########### 3 : Merge Nag and 1000Genome ###########"
   /usr/local/bin/bcftools-1.6/bcftools merge \
   -0 $outputDIR/1kG_chr$chrom.3bed_filtered.vcf.gz \
@@ -176,7 +176,7 @@ if [ ! -f $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq ]; then
 else echo "File Exists : $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq "
 fi
 
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz ]; then
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz.tbi ]; then
   startStep=`date +%s` #timer
   echo "########### Exclude 0.01 Sites ###########"
   vcftools \
@@ -193,7 +193,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.01.recode.vcf.gz"
 fi
 
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz ]; then
+if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.01.recode.vcf.gz.tbi ]; then
   startStep=`date +%s` #timer
   echo "########### Exclude 0.01 Sites ###########"
   vcftools \
