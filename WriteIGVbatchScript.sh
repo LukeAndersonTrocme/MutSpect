@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# gshuf -n 50 /Users/luke/Documents/MutSpect/data/SitesIn_ThouGenome.unique.txt \
+# gshuf -n 50 /Users/luke/Documents/MutSpect/data/Dec4_SitesIn_ThouGenome.unique.txt \
 # | awk -v s=500 '{print $1, $2-s"-"$2+s}' \
 # | sed 's/22 /chr22:/g' \
-# > /Users/luke/Documents/MutSpect/data/SitesIn_ThouGenome.unique_random50.txt
+# > /Users/luke/Documents/MutSpect/data/Dec4_SitesIn_ThouGenome.unique_random50.txt
 
 
 echo "new
@@ -17,8 +17,9 @@ while read p; do
   echo "goto $p
   sort position
   expand
-  snapshot" >> /Users/luke/Documents/MutSpect/IGV_ThouGenome_siteCheck_nag_1kg_NOV15.txt
-done < /Users/luke/Documents/MutSpect/OutputFiles/Nov13_NAG_1KG_CHR1/MissingInNAG_random50.txt
+  snapshot" >> /Users/luke/Documents/MutSpect/IGV_ThouGenome_siteCheck_nag_1kg_Dec4.txt
+done < /Users/luke/Documents/MutSpect/data/Dec4_SitesIn_ThouGenome.unique_random50.txt
+#/Users/luke/Documents/MutSpect/OutputFiles/Nov13_NAG_1KG_CHR1/MissingInNAG_random50.txt
 
 
 # new
