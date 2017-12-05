@@ -1,10 +1,10 @@
 library(VennDiagram)
 library(ggplot2)
 ##read files
-no_col <- max(count.fields("~/Documents/MutSpect/OutputFiles/Aug29_/1000Genome_filtered_JUST_JPT_freq.frq", sep = "\t"))
-thou <- read.table("~/Documents/MutSpect/OutputFiles/Aug29_/1000Genome_filtered_JUST_JPT_freq.frq",sep="\t",fill=TRUE,col.names=1:no_col, skip=1)
+no_col <- max(count.fields("~/Documents/MutSpect/FilteredData/2017-12-01/22/13-22/NAGJapan_filtered_freq.frq", sep = "\t"))
+thou <- read.table("~/Documents/MutSpect/FilteredData/2017-12-01/22/13-22/NAGJapan_filtered_freq.frq",sep="\t",fill=TRUE,col.names=1:no_col, skip=1)
 
-jap <- read.table("~/Documents/MutSpect/OutputFiles/Aug29_/NAGJapan_filtered_freq.frq",sep="\t",fill=TRUE,col.names=1:no_col, skip=1)
+jap <- read.table("~/Documents/MutSpect/FilteredData/2017-12-01/22/13-22/1000Genome_filtered_JUST_JPT_freq.frq",sep="\t",fill=TRUE,col.names=1:no_col, skip=1)
 
 toh <- read.table("~/genomes/genomes/hum0015.v1.freq.v1.txt", fill=TRUE, skip=1)
 toh$V1 <- gsub("chr","",toh$V1)
@@ -63,27 +63,27 @@ ggplot(Tohoku.unique, aes(x=Tohoku.unique$POS, y=0))+
 	theme_classic()+
 	scale_y_continuous(breaks= 0:5, labels = c("Tohoku","ThouGenome","NAG", "Tohoku+ThouGenome","ThouGenome+NAG","NAG+Tohoku"))+ylab("Sites unique to Population")
 	
-ggsave("~/Documents/MutSpect/UniqueSitesPerPopulation_0.1.pdf", height=4, width=40)
+ggsave("~/Documents/MutSpect/Dec4_UniqueSitesPerPopulation_0.1.pdf", height=4, width=40)
 
 ##Write positions for each category
-write.table(Tohoku.unique[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_Tohoku.unique.txt", quote=F, col.names=F, row.names=F)
-write.table(ThouGenome.unique[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_ThouGenome.unique.txt", quote=F, col.names=F, row.names=F)
-write.table(NAG.unique[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_NAG.unique.txt", quote=F, col.names=F, row.names=F)
-write.table(Tohoku_ThouGenome[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_Tohoku_ThouGenome.txt", quote=F, col.names=F, row.names=F)
-write.table(ThouGenome_NAG[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_ThouGenome_NAG.txt", quote=F, col.names=F, row.names=F)
-write.table(NAG_Tohoku[c(1,2)], file = "~/Documents/MutSpect/data/SitesIn_NAG_Tohoku.txt", quote=F, col.names=F, row.names=F)
+write.table(Tohoku.unique[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_Tohoku.unique.txt", quote=F, col.names=F, row.names=F)
+write.table(ThouGenome.unique[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_ThouGenome.unique.txt", quote=F, col.names=F, row.names=F)
+write.table(NAG.unique[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_NAG.unique.txt", quote=F, col.names=F, row.names=F)
+write.table(Tohoku_ThouGenome[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_Tohoku_ThouGenome.txt", quote=F, col.names=F, row.names=F)
+write.table(ThouGenome_NAG[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_ThouGenome_NAG.txt", quote=F, col.names=F, row.names=F)
+write.table(NAG_Tohoku[c(1,2)], file = "~/Documents/MutSpect/data/Dec4_SitesIn_NAG_Tohoku.txt", quote=F, col.names=F, row.names=F)
 
 
 ##Plot SFS of each pop 
 ggplot(data=total, aes(x=total$ThouGenome, y=total$NAG))+geom_bin2d(binwidth=c(1/THOUpop, 1/NAGpop))+scale_fill_gradientn(limits=c(0,2000), breaks=seq(0, 2000, by=250), colours=rainbow(3))+theme_minimal()+ylab(label="NewJapanese")+xlab(label="100GenomeJapanese")+ggtitle("SFS of 1000GenomeJapanese and NewJapanese") + theme(plot.title = element_text(hjust = 0.5, size=20))
 
-ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/SFS_1000GenomeJapanese_NewJapanese.jpg", height=12, width=12)
+ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/Dec4_SFS_1000GenomeJapanese_NewJapanese.jpg", height=12, width=12)
 
 ggplot(data=total, aes(x=total$ThouGenome, y=total$Tohoku))+geom_bin2d(binwidth=c(1/THOUpop, 1/TOHOKUpop))+scale_fill_gradientn(limits=c(0,2000), breaks=seq(0, 2000, by= 250), colours=rainbow(3))+theme_minimal()+ylab(label="Tohoku")+xlab(label="1000GenomeJapanese")+ggtitle("SFS of 1000GenomeJapanese and Tohoku") + theme(plot.title = element_text(hjust = 0.5, size=20))
 
-ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/SFS_1000GenomeJapanese_Tohoku.jpg", height=12, width=12)
+ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/Dec4_SFS_1000GenomeJapanese_Tohoku.jpg", height=12, width=12)
 
 
 ggplot(data=total, aes(x=total$Tohoku, y=total$NAG))+geom_bin2d(binwidth=c(1/TOHOKUpop, 1/NAGpop))+scale_fill_gradientn(limits=c(0,2000), breaks=seq(0, 2000, by= 250), colours=rainbow(3))+theme_minimal()+ylab(label="NewJapanese")+xlab(label="Tohoku")+ggtitle("SFS of Tohoku and NewJapanese") + theme(plot.title = element_text(hjust = 0.5, size=20))
 
-ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/SFS_NewJapanese_Tohoku.jpg", height=12, width=12)
+ggsave(filename="~/Documents/MutSpect/SFS_troubleshoot/Dec4_SFS_NewJapanese_Tohoku.jpg", height=12, width=12)
