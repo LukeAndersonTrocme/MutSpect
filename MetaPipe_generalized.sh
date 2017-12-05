@@ -131,15 +131,17 @@ fi
 echo "# # # # # # Time to run merging step on chr $chrom is : \
 $((($(date +%s)-$startStep)/60)) minutes or $((($(date +%s)-$startStep)/60/60)) hours"
 
+if [ ! -d $outputDIR/$TimeStamp.chr$chrom.MutSpect ]; then
+  #run MutSpect PipeLine on first sample
+  echo "########### MutSpect PipeLine ###########"
+  bash MutSpect_PipeLine.sh \
+  $outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
+  $chrom \
+  $TimeStamp.chr$chrom \
+  $outputDIR \
+  & echo "  #   #   #  MutSpect_PipeLine  Kill PID : $!"
+fi
 
-#run MutSpect PipeLine on first sample
-echo "########### MutSpect PipeLine ###########"
-bash MutSpect_PipeLine.sh \
-$outputDIR/1kGenome_NAG_filtered_chr$chrom.vcf.gz \
-$chrom \
-$TimeStamp.chr$chrom \
-$outputDIR \
-& echo "  #   #   #  MutSpect_PipeLine  Kill PID : $!"
 
 if [ ! -f $outputDIR/1000Genome_filtered_JUST_JPT_freq.frq ]; then
   startStep=`date +%s` #timer
@@ -193,7 +195,7 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf
 else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz"
 fi
 
-if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf.gz.tbi ]; then
+if [ ! -f $outputDIR/OnlyBadSites/plots/Removed_Sites_0.05_JPT_PCA.jpg ]; then
   startStep=`date +%s` #timer
   echo "########### Exclude 0.05 Sites ###########"
   vcftools \
@@ -219,17 +221,17 @@ if [ ! -f $outputDIR/1kGenome_NAG_filtered_chr$chrom.ONLY_Sites_0.05.recode.vcf.
   -repos /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
   -out $outputDIR/OnlyBadSites/files/
   echo "got bad sites for chrom $chrom"
+
   Rscript Make_PCA.R \
   $outputDIR/OnlyBadSites/files/ \
   $chrom \
   /Users/luke/bin/smaller_mut_spectrum_pipeline/ \
-  $outputDIR/OnlyBadSites/plots/$name
+  $outputDIR/OnlyBadSites/plots/Removed_Sites_0.05 \
+  BAD
+
   echo "PCA bad sites for chrom $chrom"
-else echo "File Exists : $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz"
+else echo "File Exists : $outputDIR/OnlyBadSites/plots/Removed_Sites_0.05_JPT_PCA.jpg"
 fi
-
-
-
 # pre=($(zgrep -Ec "$" /$outputDIR/1kGenome_NAG_filtered_chr$chrom.recode.vcf.gz))
 # post=($(zgrep -Ec "$" $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz))
 # diff=$((pre-post))
@@ -240,14 +242,15 @@ fi
 #
 # else echo "## ## ## ## ## Checked diff, less than 15%"
 # fi
-
-echo "########### MutSpect PipeLine (filtered 0.05)###########"
-bash MutSpect_PipeLine.sh \
-$outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
-$chrom \
-$TimeStamp.chr$chrom.RemoveSites_0.05 \
-$outputDIR \
-& echo "  #   #   #  MutSpect PipeLine (filtered 0.05)  Kill PID : $!"
+if [ ! -d $outputDIR/$TimeStamp.chr$chrom.RemoveSites_0.05.MutSpect ]; then
+  echo "########### MutSpect PipeLine (filtered 0.05)###########"
+  bash MutSpect_PipeLine.sh \
+  $outputDIR/1kGenome_NAG_filtered_chr$chrom.RemoveSites_0.05.recode.vcf.gz \
+  $chrom \
+  $TimeStamp.chr$chrom.RemoveSites_0.05 \
+  $outputDIR \
+  & echo "  #   #   #  MutSpect PipeLine (filtered 0.05)  Kill PID : $!"
+fi
 
 if [ ! -f $outputDIR/1000Genome_filtered0.05_JUST_JPT_freq.frq ]; then
   startStep=`date +%s` #timer
@@ -319,6 +322,5 @@ $outputDIR/filtered
 #	rm TestMode/hg19/phase3/\
 #        ALL.chr$chrom.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
 #fi
-
 
 echo "# # # # # # Time to run pipeline on chr $chrom is : $((($(date +%s)-$start)/60)) minutes or $((($(date +%s)-$start)/60/60)) hours"
