@@ -46,8 +46,8 @@ total$names<-NamePop $V1
 ggplot(total, aes(x=total$names,y=total$'colSums(tot.count)', colour=total$pop))+geom_jitter(shape=1, alpha=0.3)+ylab("Total Variants")+xlab("Individuals")+ggtitle("Total Number of Variants Per Individual and Population")+theme(plot.title = element_text(hjust = 0.5), axis.ticks.x=element_blank(), axis.text.x=element_blank())+ guides(colour=guide_legend(title="Continental Populations"))
 ggsave(paste(out,"_1000Genome_NAGjapan_totVariants.jpg", sep=""), height=10, width=10)
 
-tot.count<-prop.table(as.matrix(tot.count),2)
-
+tot.count <- prop.table(as.matrix(tot.count),2)
+tot.count <- tot.count[ , apply(tot.count, 2, var) != 0]
 
 pca.tot = prcomp(t(tot.count), scale=T)
 scores.tot = as.data.frame(pca.tot$x)
