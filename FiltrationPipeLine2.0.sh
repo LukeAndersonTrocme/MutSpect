@@ -33,7 +33,7 @@ start=`date +%s`
 # -t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi'
 
 /usr/local/bin/bcftools-1.6/bcftools filter \
---regions-file $pathToBed/Strict.Cons100way.Repeats.bed \
+--regions-file $pathToBed/Strict.Cons100way.Repeats.RMSK.bed \
 $inputVCF \
 | /usr/local/bin/bcftools-1.6/bcftools filter \
 -e "QUAL < 10 || F_MISSING > 0.01 || MAF > 0.98" \
@@ -42,10 +42,27 @@ $inputVCF \
 --output-file \
 $outputDIR/$name.3bed_filtered.vcf.gz
 
-/usr/local/bin/bcftools-1.6/bcftools index \
--t --output-file $outputDIR/$name.3bed_filtered.vcf.gz.tbi \
-$outputDIR/$name.3bed_filtered.vcf.gz
+/usr/local/bin/bcftools-1.6/bcftools filter \
+--regions-file /Users/luke/genomes/BED_MASKS/rmsk.bed \
+$outputDIR/$name.3bed_filtered.vcf.gz \
+--output-type z \
+--output-file \
+$outputDIR/$name.3bed_filtered_rmsk.vcf.gz
 
+/usr/local/bin/bcftools-1.6/bcftools index \
+-t --output-file $outputDIR/$name.3bed_filtered_rmsk.vcf.gz.tbi \
+$outputDIR/$name.3bed_filtered_rmsk.vcf.gz
+
+/usr/local/bin/bcftools-1.6/bcftools filter \
+--regions-file /Users/luke/genomes/BED_MASKS/rmsk_complement.bed \
+$outputDIR/$name.3bed_filtered.vcf.gz \
+--output-type z \
+--output-file \
+$outputDIR/$name.3bed_filtered_rmsk-c.vcf.gz
+
+/usr/local/bin/bcftools-1.6/bcftools index \
+-t --output-file $outputDIR/$name.3bed_filtered_rmsk-c.vcf.gz.tbi \
+$outputDIR/$name.3bed_filtered_rmsk-c.vcf.gz
 
 # echo "########## Filtering $name "
 # echo '/usr/local/bin/bcftools-1.6/bcftools filter \
