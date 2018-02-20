@@ -20,10 +20,16 @@ def main(args):
     joined=icontext.merge(iGT, left_on='Pos', right_on='POS')
     print("## Tables Merged")
     print(joined.iloc[0:2,0:6])
+    GT=None
+    iGT=None
+    context=None
+    icontext=None
     print('sys.getsizeof(joined) : '+str(sys.getsizeof(joined)))
-    
-    v=(joined['DerivedAllele'] == 0)
-    joined.loc[v,joined.columns[8:]]=abs(joined.loc[v,joined.columns[8:]] - 2)
+
+    # v=(joined['DerivedAllele'] == 0)
+    # print('size of v : '+str(sys.getsizeof(v)))
+    #
+    # joined.loc[v,joined.columns[8:]]=abs(joined.loc[v,joined.columns[8:]] - 2)
 
     #Norm=joined[joined['DerivedAllele'] == 1] #get HumRef
     #print('sys.getsizeof(Norm) : '+str(sys.getsizeof(Norm)))
@@ -36,7 +42,7 @@ def main(args):
     print("## Fixed Merged")
     ##grouped by the Alt -> Context
     ##each table of MutType is then summed per individual
-    name = FixedMerged.iloc[:,8:].columns
+    name = joined.iloc[:,8:].columns
     #gb = FixedMerged.groupby(['Alt','Context']).agg(dict(zip(name,cycle(['value_counts'])))).fillna(0)
     gb = joined.groupby(['Alt','Context'])
     gb = gb.agg(dict(zip(name,cycle(['value_counts']))))
