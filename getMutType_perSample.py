@@ -26,20 +26,6 @@ def main(args):
     icontext=None
     print('sys.getsizeof(joined) : '+str(sys.getsizeof(joined)))
 
-    # v=(joined['DerivedAllele'] == 0)
-    # print('size of v : '+str(sys.getsizeof(v)))
-    #
-    # joined.loc[v,joined.columns[8:]]=abs(joined.loc[v,joined.columns[8:]] - 2)
-
-    #Norm=joined[joined['DerivedAllele'] == 1] #get HumRef
-    #print('sys.getsizeof(Norm) : '+str(sys.getsizeof(Norm)))
-    #Der=joined[joined['DerivedAllele'] == 0] #get ChimpRef
-    #print('sys.getsizeof(Der) : '+str(sys.getsizeof(Der)))
-    #incorrect_to_correct = {0:2, 2:0} #swap HomRef with HomAlt
-    #D=Der.iloc[:,8:].replace(incorrect_to_correct) #swap
-    #Fixed=pd.concat([Der.iloc[:,0:8], D], axis=1) #column bind
-    #FixedMerged=pd.concat([Fixed,Norm], axis=0).sort_values(by=['Pos']) #rowbind
-    print("## Fixed Merged")
     ##grouped by the Alt -> Context
     ##each table of MutType is then summed per individual
     name = joined.iloc[:,8:].columns
