@@ -1,5 +1,7 @@
 import multiprocessing as mp
 import sys, os
+import argparse
+
 
 def Bash_cmd(i):
     print('Working on Chrom : '+str(i))
@@ -35,14 +37,22 @@ def Bash_cmd(i):
 
     print("#### getMutType_perSample Chrom : {0}".format(i))
 
-    os.system("python getMutType_perSample.py \
-    -gt {1}/AncestralRef/Chr{0}.FlippedGenotypes.Context.txt.gz \
+    os.system("python getMutType+AF_perSample.py \
+    -i {1}/AncestralRef/ \
     -chrom {0} \
-    -out {1}/AncestralRef/RunAll/".format(i,path))
+    -only {2} \
+    -out {1}/AncestralRef/RunAll/".format(i,path,args.only))
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description = 'Count Genotype per MutSpect')
+    parser.add_argument('-start', help = 'start')
+    parser.add_argument('-end', help = 'end')
+    parser.add_argument('-only', help = 'only passes just to getMutType_perSample')
+    args = parser.parse_args()
+    
     path = '/Users/luke/genomes/genomes/hg19'
-    ListOfChrom=list(range(1,5))
+
+    ListOfChrom=list(range(int(args.start),int(args.end)))
     pool_size=6 #mp.cpu_count()
     pool=mp.Pool(processes=pool_size)
     pool_outputs= pool.map(Bash_cmd, ListOfChrom)
